@@ -1,0 +1,132 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "itmar/falling",
+	"version": "0.1.0",
+	"title": "Falling",
+	"category": "design",
+	"supports": {
+		"html": false
+	},
+	"attributes": {
+		"bg_Color": {
+			"type": "string",
+			"default": "#021e79"
+		},
+		"bg_Gradient": {
+			"type": "string"
+		},
+		"number_value": {
+			"type": "number",
+			"default": 200
+		},
+		"particleImage": {
+			"type": "string",
+			"default": "snow.png"
+		},
+		"particleSize": {
+			"type": "number",
+			"default": 5
+		},
+		"particleSpeed": {
+			"type": "number",
+			"default": 3
+		},
+		"particleDirection": {
+			"type": "string",
+			"default": "bottom"
+		},
+		"poliline_num": {
+			"type": "number",
+			"default": 40
+		},
+		"linkLine_color": {
+			"type": "string",
+			"default": "#e2eef3"
+		},
+		"poliline_color": {
+			"type": "string",
+			"default": "#e2eef3"
+		},
+		"polilineSpeed": {
+			"type": "number",
+			"default": 6
+		},
+		"paperNum": {
+			"type": "number",
+			"default": 50
+		},
+		"paperSpeed": {
+			"type": "number",
+			"default": 5
+		},
+		"paperDirection": {
+			"type": "string",
+			"default": "bottom"
+		},
+		"paperDensity": {
+			"type": "number",
+			"default": 100
+		},
+		"twincleNum": {
+			"type": "number",
+			"default": 4000
+		},
+		"twincleDensity": {
+			"type": "number",
+			"default": 800
+		},
+		"twincle_color": {
+			"type": "string",
+			"default": "#ffffff"
+		},
+		"shapeNum": {
+			"type": "number",
+			"default": 60
+		},
+		"shapeDensity": {
+			"type": "number",
+			"default": 1000
+		},
+		"shape_color": {
+			"type": "array",
+			"default": [
+				"#ff7fbf",
+				"#ff7fff",
+				"#bf7fff",
+				"#ff7f7f",
+				"#7f7fff",
+				"#7fbfff",
+				"#7fffff",
+				"#7fffbf",
+				"#7fff7f",
+				"#bfff7f",
+				"#ffff7f",
+				"#ffbf7f"
+			]
+		},
+		"shape_type": {
+			"type": "array",
+			"default": [
+				"circle"
+			]
+		},
+		"shapeSize": {
+			"type": "number",
+			"default": 50
+		},
+		"shapeSpeed": {
+			"type": "number",
+			"default": 4
+		},
+		"tsOptionsJson": {
+			"type": "string",
+			"default": ""
+		}
+	},
+	"textdomain": "itmaroon-back-anime",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+}

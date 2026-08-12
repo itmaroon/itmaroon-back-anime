@@ -1,0 +1,18 @@
+{
+    "name": "itmar/loader-package",
+    "description": "This package provides the ability to load classes via Composer's PSR-4 configuration without relying on the autoloader. This is useful when you want to avoid class conflicts between loaders in multiple plugins.",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Itmar\\Autoloader\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "itmaroon",
+            "email": "master@itmaroon.net"
+        }
+    ],
+    "require": {}
+}

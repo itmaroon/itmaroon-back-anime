@@ -1,0 +1,50 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "itmar/wave",
+	"version": "0.1.0",
+	"title": "Wave",
+	"category": "design",
+	"attributes": {
+		"first_Color": {
+			"type": "string",
+			"default": "#11a0ad"
+		},
+		"second_Color": {
+			"type": "string",
+			"default": "#11a0ad"
+		},
+		"is_mulutiwave": {
+			"type": "boolean",
+			"default": true
+		},
+		"placement": {
+			"type": "string",
+			"default": "bottom"
+		},
+		"default_val": {
+			"type": "object",
+			"default": {
+				"wave_height": 200,
+				"first_wave_size":3,
+				"second_wave_size":2
+			}
+		},
+		"mobile_val": {
+			"type": "object",
+			"default": {
+				"wave_height": 100,
+				"first_wave_size":3,
+				"second_wave_size":2
+			}
+		}
+	},
+	"supports": {
+		"html": false
+	},
+	"textdomain": "degital",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./style-index.css",
+	"viewScript": "file:./view.js"
+}

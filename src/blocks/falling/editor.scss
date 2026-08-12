@@ -1,0 +1,333 @@
+/**
+ * The following styles get applied inside the editor only.
+ *
+ * Replace them with your own styles or remove the file completely.
+ */
+
+.wp-block-itmar-falling {
+	border: 1px dotted #f00;
+}
+
+.components-panel__body .particle_image,
+.particle_direction {
+	width: 100%;
+
+	.components-radio-control {
+		.components-flex {
+			display: flex;
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: center;
+			row-gap: 10px;
+		}
+
+		&__option {
+			width: 40%;
+
+			input {
+				display: none;
+			}
+
+			input[type="radio"]:checked+label {
+				border: #f00 3px solid;
+				color: transparent;
+				text-shadow: 0 -1px 1px #e2eef3, 1px 0 1px #005d82, 0 1px 1px #005d82, -1px 0 1px #005d82;
+			}
+
+			label {
+				display: block;
+				cursor: pointer;
+				width: 100%;
+				aspect-ratio: 1 / 1;
+				margin: 0;
+				padding: 9px 5px;
+				background: #181717;
+				color: #555e64;
+				text-align: center;
+				line-height: 1;
+				transition: .2s;
+				border: solid 1px #ccc;
+				border-left-style: none;
+				box-shadow: inset 0 -1px 0 #ccc;
+				border: 3px;
+				position: relative;
+
+				&:hover {
+					background: #fafafa;
+					border-color: #999;
+					box-shadow: inset 0 -1px 0 #999;
+					color: #23282d;
+				}
+
+				div {
+					width: 100%;
+					height: 100%;
+				}
+			}
+
+		}
+	}
+}
+
+
+.components-panel__body .particle_direction {
+	.components-radio-control {
+		.components-flex {
+			row-gap: 2px;
+		}
+
+		&__option {
+			width: 20%;
+
+			input[type="radio"]:checked+label {
+				border: none;
+				background-color: #0085ba;
+				color: #fff;
+				text-shadow: 0 -1px 1px #005d82, 1px 0 1px #005d82, 0 1px 1px #005d82, -1px 0 1px #005d82;
+
+
+			}
+
+			label {
+				background: #f7f7f7;
+
+				&::after {
+					content: "";
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%) rotate(135deg);
+					border-radius: 50%;
+					width: 80%;
+					height: 80%;
+					background: transparent url('../../../assets/direction.svg') no-repeat center center / cover;
+				}
+			}
+
+			&:nth-child(1) {
+				label {
+					&::after {
+						transform: translate(-50%, -50%) rotate(90deg);
+					}
+				}
+			}
+
+			&:nth-child(2) {
+				label {
+					&::after {
+						transform: translate(-50%, -50%) rotate(270deg);
+					}
+				}
+			}
+
+			&:nth-child(3) {
+				label {
+					&::after {
+						transform: translate(-50%, -50%) rotate(360deg);
+					}
+				}
+			}
+
+			&:nth-child(4) {
+				label {
+					&::after {
+						transform: translate(-50%, -50%) rotate(180deg);
+					}
+				}
+			}
+
+			&:nth-child(5) {
+				label {
+					&::after {
+						transform: translate(-50%, -50%) rotate(45deg);
+					}
+				}
+			}
+
+			&:nth-child(6) {
+				label {
+					&::after {
+						transform: translate(-50%, -50%) rotate(135deg);
+					}
+				}
+			}
+
+			&:nth-child(7) {
+				label {
+					&::after {
+						transform: translate(-50%, -50%) rotate(225deg);
+					}
+				}
+			}
+
+			&:nth-child(8) {
+				label {
+					&::after {
+						transform: translate(-50%, -50%) rotate(315deg);
+					}
+				}
+			}
+
+			&:nth-child(9) {
+				label {
+					&::after {
+						background: transparent url('../../../assets/xmark-solid.svg') no-repeat center center / cover;
+					}
+				}
+			}
+		}
+	}
+
+}
+
+
+.shapeType-ctrl {
+	width: 100%;
+
+	>div {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+		column-gap: 5px;
+		margin-top: 10px;
+
+		.components-base-control {
+			position: relative;
+			width: 20%;
+			aspect-ratio: 1 / 1;
+			background: #f7f7f7;
+			transition: .2s;
+			border: solid 1px #ccc;
+			border-left-style: none;
+			box-shadow: inset 0 -1px 0 #ccc;
+			border: 3px;
+			margin: 0 !important;
+
+			&:hover {
+				background: #a08989;
+				border-color: #999;
+				box-shadow: inset 0 -1px 0 #999;
+			}
+
+			&::after {
+				content: "";
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-40%, -30%);
+				width: 60%;
+				height: 60%;
+			}
+
+			&:nth-child(1) {
+				&::after {
+					background: transparent url('../../../assets/shape_circle.svg') no-repeat center center / cover;
+				}
+			}
+
+			&:nth-child(2) {
+				&::after {
+					background: transparent url('../../../assets/squere.svg') no-repeat center center / cover;
+				}
+			}
+
+			&:nth-child(3) {
+				&::after {
+					background: transparent url('../../../assets/triangle_icon.svg') no-repeat center center / cover;
+				}
+			}
+
+			&:nth-child(4) {
+				&::after {
+					background: transparent url('../../../assets/star-solid.svg') no-repeat center center / cover;
+				}
+			}
+
+			label {
+				display: none;
+			}
+		}
+	}
+}
+
+.shapeColor-ctrl {
+	width: 100%;
+
+	>div {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: center;
+		column-gap: 5px;
+		row-gap: 5px;
+		margin-top: 10px;
+
+		.color_item {
+			position: relative;
+			width: 20%;
+			aspect-ratio: 1 / 1;
+			background: #f7f7f7;
+			transition: .2s;
+			border: solid 1px #ccc;
+			border-left-style: none;
+			box-shadow: inset 0 -1px 0 #ccc;
+			border: 3px;
+
+			&.color_plus {
+				background: transparent url('../../../assets/circle-plus-solid.svg') no-repeat center center / cover;
+				border: none;
+				box-shadow: none;
+
+				&:hover {
+					opacity: 0.7;
+					cursor: pointer;
+				}
+			}
+
+			.color_circle {
+				position: absolute;
+				left: 0;
+				top: 10%;
+				width: 80%;
+				height: 80%;
+				border-radius: 50%;
+				transition: .2s;
+
+				&.checked {
+					&::after {
+						content: "";
+						position: absolute;
+						top: 50%;
+						left: 50%;
+						transform: translate(-50%, -50%);
+						width: 50%;
+						height: 50%;
+						background: transparent url('../../../assets/check-solid.svg') no-repeat center center / cover;
+					}
+				}
+
+				&:hover {
+					opacity: 0.7;
+					cursor: pointer;
+				}
+			}
+
+			.color_delete {
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 20%;
+				height: 20%;
+				border-radius: 50%;
+				background: transparent url('../../../assets/xmark-solid.svg') no-repeat center center / cover;
+				transition: .2s;
+
+				&:hover {
+					opacity: 0.7;
+					cursor: pointer;
+				}
+			}
+		}
+	}
+}

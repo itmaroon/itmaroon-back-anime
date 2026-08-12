@@ -1,0 +1,20 @@
+{
+    "name": "itmar/block-class-package",
+    "description": "Gutenberg block class package",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Itmar\\BlockClassPackage\\": "src/"
+        }
+    },
+    "require": {
+        "itmar/loader-package": "^1.0"
+    },
+    "authors": [
+        {
+            "name": "itmaroon",
+            "email": "master@itmaroon.net"
+        }
+    ]
+}

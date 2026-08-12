@@ -1,0 +1,41 @@
+<?php return array(
+    'root' => array(
+        'name' => '__root__',
+        'pretty_version' => 'dev-master',
+        'version' => 'dev-master',
+        'reference' => '42da79a690a83ac1315149992761b437c87679fa',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => true,
+    ),
+    'versions' => array(
+        '__root__' => array(
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '42da79a690a83ac1315149992761b437c87679fa',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'itmar/block-class-package' => array(
+            'pretty_version' => 'v1.4.2',
+            'version' => '1.4.2.0',
+            'reference' => '911cf1a100b0696a1cef76ae096ee3776a7a15c8',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../itmar/block-class-package',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'itmar/loader-package' => array(
+            'pretty_version' => 'v1.2.2',
+            'version' => '1.2.2.0',
+            'reference' => '0327c311f2a057912e62ffb36f9bc16e5af59b0a',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../itmar/loader-package',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+    ),
+);
