@@ -8,20 +8,20 @@
  *  - @tsparticles/pjs           (optional, for particles.js options compatibility)
  */
 
-import { tsParticles } from "@tsparticles/engine";
+import { tsParticles, type ISourceOptions } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
 import { loadImageShape } from "@tsparticles/shape-image";
 import { initPjs } from "@tsparticles/pjs";
 
 const SELECTOR = "[data-particle_option]";
-const initialized = new WeakSet();
+const initialized = new WeakSet<HTMLElement>();
 
-let engineReadyPromise;
+let engineReadyPromise: Promise<void> | undefined;
 
 /**
  * particles.js 互換 + slim + image shape を1回だけロード
  */
-async function ensureEngineReady() {
+async function ensureEngineReady(): Promise<void> {
 	if (!engineReadyPromise) {
 		engineReadyPromise = (async () => {
 			await loadSlim(tsParticles); // slim bundle loader :contentReference[oaicite:13]{index=13}
@@ -33,7 +33,7 @@ async function ensureEngineReady() {
 	return engineReadyPromise;
 }
 
-function isNumericString(v) {
+function isNumericString(v: unknown): v is string {
 	return typeof v === "string" && /^-?\d+(\.\d+)?$/.test(v.trim());
 }
 
@@ -41,12 +41,12 @@ function isNumericString(v) {
  * save.js 側で `${number}` のように文字列化されてる値が多いので
  * JSON を再帰的に走査して「数値っぽい文字列」を Number に戻します。
  */
-function coerceNumericStrings(value) {
+function coerceNumericStrings(value: unknown): unknown {
 	if (Array.isArray(value)) {
 		return value.map(coerceNumericStrings);
 	}
 	if (value && typeof value === "object") {
-		const out = {};
+		const out: Record<string, unknown> = {};
 		for (const [k, v] of Object.entries(value)) {
 			out[k] = coerceNumericStrings(v);
 		}
@@ -58,32 +58,32 @@ function coerceNumericStrings(value) {
 	return value;
 }
 
-function safeParseOptions(raw) {
+function safeParseOptions(raw: string | null): ISourceOptions | null {
 	if (!raw) return null;
 	try {
 		const parsed = JSON.parse(raw);
-		return coerceNumericStrings(parsed);
+		return coerceNumericStrings(parsed) as ISourceOptions;
 	} catch (e) {
 		// 何か壊れてたら落とす（フロント崩壊防止）
 		return null;
 	}
 }
 
-function makeUniqueId(index) {
+function makeUniqueId(index: number): string {
 	return `itmar-tsparticles-${index}-${Math.random().toString(36).slice(2, 9)}`;
 }
 
-function destroyIfExists(id) {
+function destroyIfExists(id: string): void {
 	// 既に動いている同IDのContainerがあれば破棄（念のため）
 	const containers = tsParticles.dom(); // Container[] :contentReference[oaicite:16]{index=16}
 	for (const c of containers) {
-		if (c?.id === id) {
+		if (c.id.description === id) {
 			c.destroy(true); // destroy(remove=true) :contentReference[oaicite:17]{index=17}
 		}
 	}
 }
 
-async function mountOne(el, index) {
+async function mountOne(el: HTMLElement, index: number): Promise<void> {
 	if (initialized.has(el)) return;
 
 	const raw = el.getAttribute("data-particle_option");
@@ -115,8 +115,10 @@ async function mountOne(el, index) {
 	}
 }
 
-async function initAll() {
-	const elements = Array.from(document.querySelectorAll(SELECTOR));
+async function initAll(): Promise<void> {
+	const elements = Array.from(
+		document.querySelectorAll<HTMLElement>(SELECTOR),
+	);
 
 	if (!elements.length) return;
 

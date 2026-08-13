@@ -1,22 +1,25 @@
-const SELECTOR = "canvas.itmar-wave-canvas[data-wave_option]";
-const instances = new WeakMap();
+import type { WavePayload, WavePlacement } from "./types";
 
-function safeParse(json) {
+const SELECTOR = "canvas.itmar-wave-canvas[data-wave_option]";
+const instances = new WeakMap<HTMLCanvasElement, { destroy: () => void }>();
+
+function safeParse(json: string | null): WavePayload | null {
+	if (!json) return null;
 	try {
-		return JSON.parse(json);
+		return JSON.parse(json) as WavePayload;
 	} catch {
 		return null;
 	}
 }
 
-function isPositioned(el) {
+function isPositioned(el: HTMLElement): boolean {
 	const pos = window.getComputedStyle(el).position;
-	return pos && pos !== "static";
+	return pos !== "" && pos !== "static";
 }
 
 // 「このブロックの背景」を貼り付ける先（positioned 祖先）を探す
 // 見つからなければ null（= フォールバック）
-function findNearestPositionedAncestor(el) {
+function findNearestPositionedAncestor(el: HTMLElement): HTMLElement | null {
 	let cur = el.parentElement;
 	while (cur) {
 		if (isPositioned(cur)) return cur;
@@ -25,7 +28,7 @@ function findNearestPositionedAncestor(el) {
 	return null;
 }
 
-function applyWrapperAsOverlay(wrapper, positionedAncestor) {
+function applyWrapperAsOverlay(wrapper: HTMLElement): void {
 	// wrapper 自体を overlay 化（親スタイルは触らない）
 	// ※ wrapper の containing block は “最も近い positioned 祖先” になる
 	wrapper.style.position = "absolute";
@@ -40,7 +43,7 @@ function applyWrapperAsOverlay(wrapper, positionedAncestor) {
 	// wrapper.style.overflow = "hidden";
 }
 
-function applyWrapperFallback(wrapper, opt) {
+function applyWrapperFallback(wrapper: HTMLElement, opt: WavePayload): void {
 	// positioned 祖先が無い場合、absolute にすると viewport に貼り付くので危険
 	// → ブロック内（通常フロー）で最低限描画できる形にする
 	wrapper.style.position = "relative";
@@ -53,7 +56,11 @@ function applyWrapperFallback(wrapper, opt) {
 	wrapper.style.minHeight = `${t}px`;
 }
 
-function getCanvasStyle(placement, waveHeight, overlayMode) {
+function getCanvasStyle(
+	placement: WavePlacement,
+	waveHeight: number,
+	overlayMode: boolean,
+): Record<string, string | number> {
 	const thickness = Math.max(1, Number(waveHeight) || 200);
 
 	const base = {
@@ -117,7 +124,7 @@ function getCanvasStyle(placement, waveHeight, overlayMode) {
 	}
 }
 
-function setupCanvasSize(canvas) {
+function setupCanvasSize(canvas: HTMLCanvasElement) {
 	const rect = canvas.getBoundingClientRect();
 	const cssW = Math.max(1, Math.floor(rect.width));
 	const cssH = Math.max(1, Math.floor(rect.height));
@@ -127,13 +134,19 @@ function setupCanvasSize(canvas) {
 	canvas.height = Math.floor(cssH * dpr);
 
 	const ctx = canvas.getContext("2d");
+	if (!ctx) throw new Error("A 2D canvas context is not available.");
 	ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
 	return { cssW, cssH, dpr, ctx };
 }
 
 // 「波がコンテナ内側へ向く」向きに揃える
-function applyPlacementTransform(ctx, placement, cssW, cssH) {
+function applyPlacementTransform(
+	ctx: CanvasRenderingContext2D,
+	placement: WavePlacement,
+	cssW: number,
+	cssH: number,
+) {
 	switch (placement) {
 		case "bottom":
 			// 下向き（そのまま）
@@ -162,7 +175,7 @@ function applyPlacementTransform(ctx, placement, cssW, cssH) {
 	}
 }
 
-function startWave(canvas, opt) {
+function startWave(canvas: HTMLCanvasElement, opt: WavePayload): void {
 	//スマホ対応
 	let responsive = resolveResponsive(opt);
 
@@ -171,13 +184,14 @@ function startWave(canvas, opt) {
 	if (prev) prev.destroy();
 
 	const wrapper = canvas.parentElement; // save.js の wrapper div
+	if (!wrapper) return;
 
 	// overlay できるか（近い positioned 祖先があるか）
 	const positionedAncestor = findNearestPositionedAncestor(wrapper);
 	const overlayMode = Boolean(positionedAncestor);
 
 	if (overlayMode) {
-		applyWrapperAsOverlay(wrapper, positionedAncestor);
+		applyWrapperAsOverlay(wrapper);
 	} else {
 		applyWrapperFallback(wrapper, opt);
 		// “背景化できません” は開発時だけ気づけるように
@@ -200,7 +214,7 @@ function startWave(canvas, opt) {
 	let seconds = 0;
 
 	// サイズ・ctx キャッシュ
-	let render = null;
+	let render: ReturnType<typeof setupCanvasSize> | null = null;
 
 	const resize = () => {
 		// CSS反映後に rect を取る
@@ -229,7 +243,14 @@ function startWave(canvas, opt) {
 	};
 	window.addEventListener("resize", handleResponsiveChange, { passive: true });
 
-	const drawSine = (ctx, w, h, t, zoom, delay) => {
+	const drawSine = (
+		ctx: CanvasRenderingContext2D,
+		w: number,
+		h: number,
+		t: number,
+		zoom: number,
+		delay: number,
+	) => {
 		const xAxis = Math.floor(h / 2);
 		let x = t;
 		let y = Math.sin(x) / zoom;
@@ -243,7 +264,16 @@ function startWave(canvas, opt) {
 		}
 	};
 
-	const drawWave = (ctx, w, h, color, alpha, zoom, delay, t) => {
+	const drawWave = (
+		ctx: CanvasRenderingContext2D,
+		w: number,
+		h: number,
+		color: string,
+		alpha: number,
+		zoom: number,
+		delay: number,
+		t: number,
+	) => {
 		ctx.save();
 		ctx.fillStyle = color || "#000";
 		ctx.globalAlpha = alpha;
@@ -264,7 +294,7 @@ function startWave(canvas, opt) {
 	});
 
 	// サイズ変化追従：overlay の時は positionedAncestor を監視するのが安定
-	let ro = null;
+	let ro: ResizeObserver | null = null;
 	if ("ResizeObserver" in window) {
 		const observeTarget = overlayMode ? positionedAncestor : wrapper;
 		if (observeTarget) {
@@ -273,7 +303,7 @@ function startWave(canvas, opt) {
 		}
 	}
 
-	const tick = (ts) => {
+	const tick = (ts: number) => {
 		if (!render || !render.ctx) {
 			rafId = requestAnimationFrame(tick);
 			return;
@@ -322,11 +352,11 @@ function startWave(canvas, opt) {
 }
 
 //レスポンシブ対応
-function isMobileNow() {
+function isMobileNow(): boolean {
 	return window.matchMedia("(max-width: 782px)").matches;
 }
 
-function resolveResponsive(opt) {
+function resolveResponsive(opt: WavePayload) {
 	const mobile = isMobileNow();
 	const base = mobile ? opt.mobile_val : opt.default_val;
 
@@ -345,8 +375,8 @@ function resolveResponsive(opt) {
 }
 
 //スタートポイント
-function initAll() {
-	document.querySelectorAll(SELECTOR).forEach((canvas) => {
+function initAll(): void {
+	document.querySelectorAll<HTMLCanvasElement>(SELECTOR).forEach((canvas) => {
 		const opt = safeParse(canvas.getAttribute("data-wave_option"));
 		if (!opt) return;
 		startWave(canvas, opt);

@@ -6,7 +6,7 @@ class ItmarEntryClass
 {
   function block_init($text_domain, $file_path)
   {
-    //jsで使えるようにplugin_urlをローカライズ(テキストドメインを配列名としてプラグイン独自のもの)
+    //jsで使えるようにplugin_urlをローカライズ
     $js_name = str_replace("-", "_", $text_domain);
     $handle_path = plugin_dir_path($file_path) . 'assets/block_handle.js';
     $version = file_exists($handle_path) ? filemtime($handle_path) : false;
@@ -33,7 +33,14 @@ class ItmarEntryClass
         $block_type = register_block_type($block);
         // その後、このハンドルを使用してスクリプトの翻訳をセット
         if ($block_type instanceof \WP_Block_Type) {
-
+          $block_handle = str_replace("/", "-", $block_type->name);
+          // register_block_typeで生成されるハンドルを使用してスクリプトの翻訳をセット
+          wp_set_script_translations(
+            $block_handle . '-editor-script',
+            $text_domain,
+            plugin_dir_path($file_path) . 'languages'
+          );
+          // このブロックが使う script handle 全部に localize を当てる
           $handles = array_merge(
             $block_type->editor_script_handles ?? array(),
             $block_type->script_handles ?? array(),
@@ -42,15 +49,7 @@ class ItmarEntryClass
           $handles = array_unique(array_filter($handles));
 
           foreach ($handles as $h) {
-            // このブロックが使う script handle 全部に localize を当てる
             wp_localize_script($h, 'itmar_option', $itmar_option);
-
-            // ✅ 各ハンドルに翻訳をセット（viewScript も含む）
-            wp_set_script_translations(
-              $h,
-              $text_domain,
-              plugin_dir_path($file_path) . 'languages'
-            );
           }
         }
       }
@@ -62,7 +61,13 @@ class ItmarEntryClass
 
       // その後、このハンドルを使用してスクリプトの翻訳をセット
       if ($block_type instanceof \WP_Block_Type) {
-
+        $block_handle = str_replace("/", "-", $block_type->name);
+        // register_block_typeで生成されるハンドルを使用してスクリプトの翻訳をセット
+        wp_set_script_translations(
+          $block_handle . '-editor-script',
+          $text_domain,
+          plugin_dir_path($file_path) . 'languages'
+        );
         // 単体ブロックの handle も同様に
         $handles = array_merge(
           $block_type->editor_script_handles ?? array(),
@@ -73,13 +78,6 @@ class ItmarEntryClass
 
         foreach ($handles as $h) {
           wp_localize_script($h, 'itmar_option', $itmar_option);
-
-          // ✅ 各ハンドルに翻訳をセット（viewScript も含む）
-          wp_set_script_translations(
-            $h,
-            $text_domain,
-            plugin_dir_path($file_path) . 'languages'
-          );
         }
       }
     }
@@ -87,7 +85,6 @@ class ItmarEntryClass
     //PHP用のテキストドメインの読込（国際化）
     load_plugin_textdomain($text_domain, false, basename(dirname($file_path)) . '/languages');
   }
-
 
   // 依存関係のチェック関数
   function check_dependencies($plugin_data, $plugin_slug)

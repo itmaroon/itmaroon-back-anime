@@ -42,7 +42,7 @@
 	"supports": {
 		"html": false
 	},
-	"textdomain": "degital",
+	"textdomain": "itmaroon-back-anime",
 	"editorScript": "file:./index.js",
 	"editorStyle": "file:./index.css",
 	"style": "file:./style-index.css",

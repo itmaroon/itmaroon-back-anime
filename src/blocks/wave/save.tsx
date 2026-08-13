@@ -1,6 +1,11 @@
 import { useBlockProps } from "@wordpress/block-editor";
+import type { WaveAttributes } from "./types";
 
-export default function save({ attributes }) {
+interface SaveProps {
+	attributes: WaveAttributes;
+}
+
+export default function save({ attributes }: SaveProps) {
 	// そのまま全部保存でもOKだけど、最小化するなら必要項目だけにするのがベター
 	const payload = {
 		first_Color: attributes.first_Color,
@@ -22,7 +27,7 @@ export default function save({ attributes }) {
 				style={{
 					display: "block",
 					width: "100%",
-					height: `${payload.wave_height || 200}px`,
+					height: `${payload.default_val.wave_height || 200}px`,
 				}}
 			/>
 		</div>

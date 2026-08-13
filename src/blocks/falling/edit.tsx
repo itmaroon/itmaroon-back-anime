@@ -1,10 +1,14 @@
 import { __ } from "@wordpress/i18n";
 import "./editor.scss";
-import ImageList from "../../../ImageList";
-import MultiSelect from "../../../MultiSelect";
-import { tsParticles } from "@tsparticles/engine";
+import type { BlockEditProps } from "@wordpress/blocks";
+import {
+	tsParticles,
+	type Container,
+	type ISourceOptions,
+	type MoveDirection,
+} from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
-import { useDeepCompareEffect } from "../../../CustomFooks";
+import { useDeepCompareEffect } from "itmar-block-packages";
 
 import {
 	PanelBody,
@@ -18,6 +22,10 @@ import {
 	InspectorControls,
 	__experimentalPanelColorGradientSettings as PanelColorGradientSettings,
 } from "@wordpress/block-editor";
+import { ShapeColorControl } from "./shape-color-control";
+import { ShapeTypeControl } from "./shape-type-control";
+import type { FallingAttributes } from "./types";
+import { useParticleImageOptions } from "./use-particle-image-options";
 
 let slimLoaded = false;
 const ensureSlimLoaded = async () => {
@@ -26,7 +34,11 @@ const ensureSlimLoaded = async () => {
 	slimLoaded = true;
 };
 
-export default function Edit({ attributes, setAttributes, clientId }) {
+export default function Edit({
+	attributes,
+	setAttributes,
+	clientId,
+}: BlockEditProps<FallingAttributes>) {
 	const {
 		bg_Color,
 		bg_Gradient,
@@ -65,20 +77,23 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		},
 	});
 	// edit.js 内で attributes から作る想定（数値が文字列でも安全にする）
-	const toNumber = (v, fallback = 0) => {
+	const toNumber = (v: unknown, fallback = 0): number => {
 		const n = Number(v);
 		return Number.isFinite(n) ? n : fallback;
 	};
 
-	const buildTsOptions = () => {
+	const buildTsOptions = (): ISourceOptions => {
 		//パーティクルのオプション
 
-		const particle_options = {
+		const particle_options: Record<string, ISourceOptions> = {
 			"is-style-default": {
 				fullScreen: { enable: false },
 				detectRetina: true,
 				particles: {
-					number: { value: number_value, density: { enable: true, area: 800 } },
+					number: {
+						value: number_value,
+						density: { enable: true, width: 800, height: 800 },
+					},
 					color: { value: "#ffffff" },
 					shape: {
 						type: "image",
@@ -93,11 +108,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					stroke: { width: 3, color: { value: "#fff" } },
 					opacity: {
 						value: 0.7,
-						random: { enable: false },
 						animation: {
 							enable: false,
 							speed: 1,
-							minimumValue: 0.1,
 							sync: false,
 						},
 					},
@@ -106,7 +119,6 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 						animation: {
 							enable: false,
 							speed: 20,
-							minimumValue: 0.1,
 							sync: false,
 						},
 					},
@@ -115,11 +127,10 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					move: {
 						enable: true,
 						speed: particleSpeed,
-						direction: particleDirection,
+						direction: particleDirection as MoveDirection,
 						random: true,
 						straight: false,
 						outModes: { default: "out" },
-						bounce: false,
 						attract: { enable: true, rotate: { x: 300, y: 1200 } },
 					},
 				},
@@ -128,7 +139,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					events: {
 						onHover: { enable: false },
 						onClick: { enable: false },
-						resize: true,
+						resize: { enable: true },
 					},
 				},
 			},
@@ -165,22 +176,18 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
 					opacity: {
 						value: 0.664994832269074,
-						random: { enable: false },
 						animation: {
 							enable: true,
 							speed: 2.2722661797524872,
-							minimumValue: 0.08115236356258881,
 							sync: false,
 						},
 					},
 
 					size: {
 						value: 3,
-						random: { enable: true },
 						animation: {
 							enable: false,
 							speed: 40,
-							minimumValue: 0.1,
 							sync: false,
 						},
 					},
@@ -219,7 +226,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					events: {
 						onHover: { enable: false, mode: "repulse" },
 						onClick: { enable: false },
-						resize: true,
+						resize: { enable: true },
 					},
 				},
 			},
@@ -265,22 +272,18 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
 					opacity: {
 						value: 1,
-						random: { enable: false },
 						animation: {
 							enable: true,
 							speed: 20,
-							minimumValue: 0,
 							sync: false,
 						},
 					},
 
 					size: {
 						value: 5,
-						random: { enable: true },
 						animation: {
 							enable: true,
 							speed: 1,
-							minimumValue: 1,
 							sync: false,
 						},
 					},
@@ -290,7 +293,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					move: {
 						enable: true,
 						speed: toNumber(paperSpeed, 0),
-						direction: paperDirection || "bottom",
+						direction: (paperDirection || "bottom") as MoveDirection,
 						random: false,
 						straight: false,
 						outModes: { default: "out" },
@@ -306,7 +309,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					events: {
 						onHover: { enable: false },
 						onClick: { enable: false },
-						resize: true,
+						resize: { enable: true },
 					},
 				},
 			},
@@ -343,11 +346,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
 					opacity: {
 						value: 0.5,
-						random: { enable: true },
 						animation: {
 							enable: true,
 							speed: 1,
-							minimumValue: 0.1,
 							sync: false,
 						},
 					},
@@ -357,11 +358,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 							min: 0.1,
 							max: Number.isFinite(shapeSize) ? shapeSize : 11,
 						},
-						random: { enable: true },
 						animation: {
 							enable: false,
 							speed: 10,
-							minimumValue: 1,
 							sync: false,
 						},
 					},
@@ -393,7 +392,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 					events: {
 						onHover: { enable: false, mode: "bubble" },
 						onClick: { enable: true, mode: "push" },
-						resize: true,
+						resize: { enable: true },
 					},
 					modes: {
 						grab: {
@@ -416,7 +415,8 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 		};
 
 		const base =
-			particle_options[className] || particle_options["is-style-default"];
+			particle_options[className ?? "is-style-default"] ||
+			particle_options["is-style-default"];
 
 		// --- 必須: 親要素からはみ出さない（fixed/top/leftを出さない） ---
 		const options = {
@@ -428,10 +428,10 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 	};
 
 	//パーティクルのイメージ画像リストの取得
-	const imageList = ImageList();
+	const imageOptions = useParticleImageOptions();
 
-	const hostRef = useRef(null); // ここにcanvasが生成される
-	const containerRef = useRef(null); // tsParticles Containerを保持
+	const hostRef = useRef<HTMLDivElement | null>(null); // ここにcanvasが生成される
+	const containerRef = useRef<Container | null>(null); // tsParticles Containerを保持
 
 	const options = useMemo(() => {
 		return buildTsOptions();
@@ -475,7 +475,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 				container?.destroy();
 				return;
 			}
-			containerRef.current = container;
+			containerRef.current = container ?? null;
 		};
 
 		mount();
@@ -491,7 +491,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 
 	return (
 		<>
-			<InspectorControls group="settings">
+			<InspectorControls group="styles">
 				<PanelBody
 					title={__("Background Settings", "itmaroon-back-anime")}
 					initialOpen={true}
@@ -511,12 +511,12 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 									{ name: "transparent", color: "#00000000" },
 								],
 								label: __("Choice color or gradient", "itmaroon-back-anime"),
-								onColorChange: (newValue) => {
+								onColorChange: (newValue: string | undefined) => {
 									setAttributes({
 										bg_Color: newValue === undefined ? "" : newValue,
 									});
 								},
-								onGradientChange: (newValue) => {
+								onGradientChange: (newValue: string | undefined) => {
 									setAttributes({ bg_Gradient: newValue });
 								},
 							},
@@ -535,7 +535,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								label={__("Particle Num", "itmaroon-back-anime")}
 								max={500}
 								min={50}
-								onChange={(val) => setAttributes({ number_value: val })}
+								onChange={(val: number | undefined) =>
+									setAttributes({ number_value: val })
+								}
 								separatorType="none"
 								step={10}
 								withInputField={false}
@@ -547,7 +549,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								label={__("Particle Size", "itmaroon-back-anime")}
 								max={20}
 								min={3}
-								onChange={(val) => setAttributes({ particleSize: val })}
+								onChange={(val: number | undefined) =>
+									setAttributes({ particleSize: val })
+								}
 								separatorType="none"
 								step={1}
 								withInputField={false}
@@ -559,7 +563,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								label={__("Falling Speed", "itmaroon-back-anime")}
 								max={10}
 								min={1}
-								onChange={(val) => setAttributes({ particleSpeed: val })}
+								onChange={(val: number | undefined) =>
+									setAttributes({ particleSpeed: val })
+								}
 								separatorType="none"
 								step={1}
 								withInputField={false}
@@ -581,7 +587,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 										{ value: "top-right" },
 										{ value: "none" },
 									]}
-									onChange={(changeOption) => {
+									onChange={(changeOption: string) => {
 										setAttributes({ particleDirection: changeOption });
 									}}
 								/>
@@ -590,10 +596,13 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 						<PanelRow>
 							<div className="particle_image">
 								<RadioControl
-									label={__("Selecting a particle image", "itmaroon-back-anime")}
+									label={__(
+										"Selecting a particle image",
+										"itmaroon-back-anime",
+									)}
 									selected={particleImage}
-									options={imageList}
-									onChange={(changeOption) => {
+									options={imageOptions}
+									onChange={(changeOption: string) => {
 										setAttributes({ particleImage: changeOption });
 									}}
 								/>
@@ -613,7 +622,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								label={__("Polyline Num", "itmaroon-back-anime")}
 								max={100}
 								min={20}
-								onChange={(val) => setAttributes({ poliline_num: val })}
+								onChange={(val: number | undefined) =>
+									setAttributes({ poliline_num: val })
+								}
 								separatorType="none"
 								step={10}
 								withInputField={false}
@@ -625,13 +636,13 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								{
 									colorValue: poliline_color,
 									label: __("Poliline line Color", "itmaroon-back-anime"),
-									onColorChange: (newValue) =>
+									onColorChange: (newValue: string | undefined) =>
 										setAttributes({ poliline_color: newValue }),
 								},
 								{
 									colorValue: linkLine_color,
 									label: __("Link line Color", "itmaroon-back-anime"),
-									onColorChange: (newValue) =>
+									onColorChange: (newValue: string | undefined) =>
 										setAttributes({ linkLine_color: newValue }),
 								},
 							]}
@@ -643,7 +654,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								label={__("Moving Speed", "itmaroon-back-anime")}
 								max={20}
 								min={3}
-								onChange={(val) => setAttributes({ polilineSpeed: val })}
+								onChange={(val: number | undefined) =>
+									setAttributes({ polilineSpeed: val })
+								}
 								separatorType="none"
 								step={1}
 								withInputField={false}
@@ -663,7 +676,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								label={__("Confetti Num", "itmaroon-back-anime")}
 								max={100}
 								min={20}
-								onChange={(val) => setAttributes({ paperNum: val })}
+								onChange={(val: number | undefined) =>
+									setAttributes({ paperNum: val })
+								}
 								separatorType="none"
 								step={10}
 								withInputField={false}
@@ -675,7 +690,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								label={__("Confetti density", "itmaroon-back-anime")}
 								max={500}
 								min={50}
-								onChange={(val) => setAttributes({ paperDensity: val })}
+								onChange={(val: number | undefined) =>
+									setAttributes({ paperDensity: val })
+								}
 								separatorType="none"
 								step={10}
 								withInputField={false}
@@ -688,7 +705,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								label={__("The speed of the blizzard", "itmaroon-back-anime")}
 								max={20}
 								min={3}
-								onChange={(val) => setAttributes({ paperSpeed: val })}
+								onChange={(val: number | undefined) =>
+									setAttributes({ paperSpeed: val })
+								}
 								separatorType="none"
 								step={1}
 								withInputField={false}
@@ -709,7 +728,7 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 										{ value: "top-left" },
 										{ value: "top-right" },
 									]}
-									onChange={(changeOption) => {
+									onChange={(changeOption: string) => {
 										setAttributes({ paperDirection: changeOption });
 									}}
 								/>
@@ -730,7 +749,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								label={__("Shape Num", "itmaroon-back-anime")}
 								max={100}
 								min={20}
-								onChange={(val) => setAttributes({ shapeNum: val })}
+								onChange={(val: number | undefined) =>
+									setAttributes({ shapeNum: val })
+								}
 								separatorType="none"
 								step={10}
 								withInputField={false}
@@ -742,7 +763,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								label={__("Shape Density", "itmaroon-back-anime")}
 								max={2000}
 								min={500}
-								onChange={(val) => setAttributes({ shapeDensity: val })}
+								onChange={(val: number | undefined) =>
+									setAttributes({ shapeDensity: val })
+								}
 								separatorType="none"
 								step={100}
 								withInputField={false}
@@ -755,7 +778,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								label={__("Shape Size", "itmaroon-back-anime")}
 								max={100}
 								min={10}
-								onChange={(val) => setAttributes({ shapeSize: val })}
+								onChange={(val: number | undefined) =>
+									setAttributes({ shapeSize: val })
+								}
 								separatorType="none"
 								step={10}
 								withInputField={false}
@@ -768,7 +793,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								label={__("Moving Speed", "itmaroon-back-anime")}
 								max={20}
 								min={3}
-								onChange={(val) => setAttributes({ shapeSpeed: val })}
+								onChange={(val: number | undefined) =>
+									setAttributes({ shapeSpeed: val })
+								}
 								separatorType="none"
 								step={1}
 								withInputField={false}
@@ -779,12 +806,10 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								<label>
 									{__("Types included in the shape", "itmaroon-back-anime")}
 								</label>
-								<MultiSelect
-									stockArrayName="shape_type"
-									stokArray={shape_type}
-									type="checkBox"
-									option={["circle", "edge", "triangle", "star"]}
-									setAttributes={setAttributes}
+								<ShapeTypeControl
+									value={shape_type}
+									options={["circle", "edge", "triangle", "star"]}
+									onChange={(value) => setAttributes({ shape_type: value })}
 								/>
 							</div>
 						</PanelRow>
@@ -793,11 +818,9 @@ export default function Edit({ attributes, setAttributes, clientId }) {
 								<label>
 									{__("Color included in the shape", "itmaroon-back-anime")}
 								</label>
-								<MultiSelect
-									stockArrayName="shape_color"
-									stokArray={shape_color}
-									type="colorPicker"
-									setAttributes={setAttributes}
+								<ShapeColorControl
+									value={shape_color}
+									onChange={(value) => setAttributes({ shape_color: value })}
 								/>
 							</div>
 						</PanelRow>

@@ -1,8 +1,12 @@
 import { __ } from "@wordpress/i18n";
 import "./editor.scss";
 
+import type { BlockEditProps } from "@wordpress/blocks";
 import { useRef, useMemo } from "@wordpress/element";
-import { useDeepCompareEffect } from "../../../CustomFooks";
+import {
+	useDeepCompareEffect,
+	useIsIframeMobile,
+} from "itmar-block-packages";
 
 import {
 	PanelBody,
@@ -17,9 +21,12 @@ import {
 	__experimentalPanelColorGradientSettings as PanelColorGradientSettings,
 } from "@wordpress/block-editor";
 
-import { useIsIframeMobile } from "itmar-block-packages";
+import type { WaveAttributes, WavePlacement } from "./types";
 
-function getCanvasStyle(placement, thickness) {
+function getCanvasStyle(
+	placement: WavePlacement,
+	thickness: number,
+): Record<string, string | number> {
 	const t = Math.max(1, Number(thickness) || 200);
 
 	const base = {
@@ -77,7 +84,7 @@ function getCanvasStyle(placement, thickness) {
 }
 
 // canvas の“表示サイズ”に合わせて実ピクセルを設定（上下左右どれでもOK）
-function setupCanvasSize(canvas) {
+function setupCanvasSize(canvas: HTMLCanvasElement) {
 	const rect = canvas.getBoundingClientRect();
 	const cssW = Math.max(1, Math.floor(rect.width));
 	const cssH = Math.max(1, Math.floor(rect.height));
@@ -87,6 +94,7 @@ function setupCanvasSize(canvas) {
 	canvas.height = Math.floor(cssH * dpr);
 
 	const ctx = canvas.getContext("2d");
+	if (!ctx) throw new Error("A 2D canvas context is not available.");
 	ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
 	return { cssW, cssH, dpr, ctx };
@@ -94,7 +102,12 @@ function setupCanvasSize(canvas) {
 
 // 「波が親要素の内側へ向く」向きに揃える transform
 // ここでは “top=下向き、bottom=上向き、left=右向き、right=左向き” にしています
-function applyPlacementTransform(ctx, placement, cssW, cssH) {
+function applyPlacementTransform(
+	ctx: CanvasRenderingContext2D,
+	placement: WavePlacement,
+	cssW: number,
+	cssH: number,
+) {
 	// 戻り値は「描画ロジック上の横幅/縦幅（回転時は入れ替え）」
 	switch (placement) {
 		case "bottom":
@@ -123,7 +136,10 @@ function applyPlacementTransform(ctx, placement, cssW, cssH) {
 	}
 }
 
-export default function Edit({ attributes, setAttributes }) {
+export default function Edit({
+	attributes,
+	setAttributes,
+}: BlockEditProps<WaveAttributes>) {
 	const {
 		first_Color,
 		second_Color,
@@ -137,8 +153,8 @@ export default function Edit({ attributes, setAttributes }) {
 	const isMobile = useIsIframeMobile();
 
 	// ブロックDOM / canvas を直接掴む（idで取らない）
-	const wrapperRef = useRef(null);
-	const canvasRef = useRef(null);
+	const wrapperRef = useRef<HTMLDivElement | null>(null);
+	const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
 	// ループ/状態管理
 	const rafIdRef = useRef(0);
@@ -146,8 +162,13 @@ export default function Edit({ attributes, setAttributes }) {
 	const timeRef = useRef({ seconds: 0 });
 
 	// サイズ/ctxキャッシュ
-	const renderRef = useRef({ cssW: 0, cssH: 0, dpr: 1, ctx: null });
-	const resizeFnRef = useRef(null);
+	const renderRef = useRef<{
+		cssW: number;
+		cssH: number;
+		dpr: number;
+		ctx: CanvasRenderingContext2D | null;
+	}>({ cssW: 0, cssH: 0, dpr: 1, ctx: null });
+	const resizeFnRef = useRef<(() => void) | null>(null);
 	//レスポンシブデザイン
 	const wave_height = !isMobile
 		? default_val.wave_height
@@ -210,7 +231,14 @@ export default function Edit({ attributes, setAttributes }) {
 			ro.observe(wrapper);
 		}
 
-		const drawSine = (ctx, w, h, t, zoom, delay) => {
+		const drawSine = (
+			ctx: CanvasRenderingContext2D,
+			w: number,
+			h: number,
+			t: number,
+			zoom: number,
+			delay: number,
+		) => {
 			const xAxis = Math.floor(h / 2);
 			const yAxis = 0;
 
@@ -226,7 +254,16 @@ export default function Edit({ attributes, setAttributes }) {
 			}
 		};
 
-		const drawWave = (ctx, w, h, color, alpha, zoom, delay, t) => {
+		const drawWave = (
+			ctx: CanvasRenderingContext2D,
+			w: number,
+			h: number,
+			color: string,
+			alpha: number,
+			zoom: number,
+			delay: number,
+			t: number,
+		) => {
 			ctx.save();
 			ctx.fillStyle = color || "#000";
 			ctx.globalAlpha = alpha;
@@ -241,7 +278,7 @@ export default function Edit({ attributes, setAttributes }) {
 			ctx.restore();
 		};
 
-		const tick = (ts) => {
+		const tick = (ts: number) => {
 			const { ctx, cssW, cssH, dpr } = renderRef.current;
 			if (!ctx || !cssW || !cssH) {
 				rafIdRef.current = requestAnimationFrame(tick);
@@ -325,7 +362,9 @@ export default function Edit({ attributes, setAttributes }) {
 						<ToggleControl
 							label={__("Double the waves", "itmaroon-back-anime")}
 							checked={is_mulutiwave}
-							onChange={(val) => setAttributes({ is_mulutiwave: val })}
+							onChange={(val: boolean) =>
+								setAttributes({ is_mulutiwave: val })
+							}
 						/>
 					</PanelRow>
 					<PanelRow className="logoSizeCtrl">
@@ -340,7 +379,7 @@ export default function Edit({ attributes, setAttributes }) {
 							}
 							max={500}
 							min={50}
-							onChange={(val) => {
+							onChange={(val: number) => {
 								if (!isMobile) {
 									setAttributes({
 										default_val: { ...default_val, wave_height: val },
@@ -367,7 +406,7 @@ export default function Edit({ attributes, setAttributes }) {
 									{ label: __("Bottom", "itmaroon-back-anime"), value: "bottom" },
 									{ label: __("Left", "itmaroon-back-anime"), value: "left" },
 								]}
-								onChange={(changeOption) => {
+								onChange={(changeOption: WavePlacement) => {
 									setAttributes({ placement: changeOption });
 								}}
 							/>
@@ -386,7 +425,7 @@ export default function Edit({ attributes, setAttributes }) {
 							{
 								colorValue: first_Color,
 								label: __("Choice color", "itmaroon-back-anime"),
-								onColorChange: (newValue) => {
+								onColorChange: (newValue: string | undefined) => {
 									setAttributes({
 										first_Color: newValue === undefined ? "" : newValue,
 									});
@@ -406,7 +445,7 @@ export default function Edit({ attributes, setAttributes }) {
 									? __("Wave Size(desk top)", "itmaroon-back-anime")
 									: __("Wave Size(mobile)", "itmaroon-back-anime")
 							}
-							onChange={(val) => {
+							onChange={(val: number) => {
 								if (!isMobile) {
 									setAttributes({
 										default_val: { ...default_val, first_wave_size: val },
@@ -438,7 +477,7 @@ export default function Edit({ attributes, setAttributes }) {
 								{
 									colorValue: second_Color,
 									label: __("Choice color", "itmaroon-back-anime"),
-									onColorChange: (newValue) => {
+									onColorChange: (newValue: string | undefined) => {
 										setAttributes({
 											second_Color: newValue === undefined ? "" : newValue,
 										});
@@ -458,7 +497,7 @@ export default function Edit({ attributes, setAttributes }) {
 										? __("Wave Size(desk top)", "itmaroon-back-anime")
 										: __("Wave Size(mobile)", "itmaroon-back-anime")
 								}
-								onChange={(val) => {
+								onChange={(val: number) => {
 									if (!isMobile) {
 										setAttributes({
 											default_val: { ...default_val, second_wave_size: val },

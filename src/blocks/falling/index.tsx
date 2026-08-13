@@ -9,8 +9,9 @@ import { ReactComponent as Falling } from "./falling.svg";
 import Edit from "./edit";
 import save from "./save";
 import metadata from "./block.json";
+import type { FallingAttributes } from "./types";
 
-registerBlockType(metadata.name, {
+registerBlockType<FallingAttributes>(metadata.name, {
 	styles: [
 		{
 			name: "default",

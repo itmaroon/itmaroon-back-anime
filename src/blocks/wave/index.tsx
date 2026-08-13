@@ -6,8 +6,9 @@ import { ReactComponent as Wave } from "./wave.svg";
 import Edit from "./edit";
 import save from "./save";
 import metadata from "./block.json";
+import type { WaveAttributes } from "./types";
 
-registerBlockType(metadata.name, {
+registerBlockType<WaveAttributes>(metadata.name, {
 	description: __(
 		"This block creates animations of moving waves.",
 		"itmaroon-back-anime",

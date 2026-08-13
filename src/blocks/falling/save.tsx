@@ -1,6 +1,11 @@
 import { useBlockProps } from "@wordpress/block-editor";
+import type { FallingAttributes } from "./types";
 
-export default function save({ attributes }) {
+interface SaveProps {
+	attributes: FallingAttributes;
+}
+
+export default function save({ attributes }: SaveProps) {
 	const { tsOptionsJson, bg_Color, bg_Gradient } = attributes;
 	//単色かグラデーションかの選択
 	const bgColor = bg_Gradient || bg_Color;

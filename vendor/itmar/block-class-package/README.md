@@ -15,6 +15,9 @@ class ItmarAccessClass
 class ProgressOverlay  
 
 ## 変更履歴
+= 1.4.3 =
+クライアントサイドで使えるように変数のローカライズを拡張
+
 = 1.4.2 =  
 アクセスカウンターのためのItmarAccessClassを確実性の高いカウント方式に修正
 
