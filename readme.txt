@@ -75,11 +75,12 @@ The canvas animations are decorative backgrounds. Canvas elements are output wit
 
 == Screenshots ==
 
-1. Particle Background Block - example (desktop)
-2. Particle Background Block - settings panel
-3. Wave Background Block - example (desktop)
-4. Wave Background Block - responsive (mobile) settings example
-5. Wave Background Block - placement options (top/right/bottom/left)
+1. Particle Background Block - example (Geometric patterns and waves)
+2. Particle Background Block - example (Bubbles and Waves)
+3. Particle Background Block - example (Snow falling)
+4. Particle Background Block - example (A flurry of falling blossoms)
+5. Particle Background Block - settings panel
+6. Wave Background Block - settings panel
 
 == Changelog ==
 
