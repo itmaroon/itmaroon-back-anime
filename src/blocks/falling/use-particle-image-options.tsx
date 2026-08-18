@@ -14,7 +14,7 @@ export function useParticleImageOptions(): ParticleImageOption[] {
 		const fetchImageOptions = async () => {
 			try {
 				const response = await fetch(
-					`${back_anime.plugin_url}/build/fileList.json`,
+					`${itmaroon_back_anime.plugin_url}/build/fileList.json`,
 					{ signal: abortController.signal },
 				);
 				if (!response.ok) {
@@ -22,8 +22,13 @@ export function useParticleImageOptions(): ParticleImageOption[] {
 				}
 
 				const data: unknown = await response.json();
-				if (!Array.isArray(data) || !data.every((item) => typeof item === "string")) {
-					throw new TypeError("fileList.json must contain an array of strings.");
+				if (
+					!Array.isArray(data) ||
+					!data.every((item) => typeof item === "string")
+				) {
+					throw new TypeError(
+						"fileList.json must contain an array of strings.",
+					);
 				}
 
 				setImageOptions(
@@ -31,7 +36,7 @@ export function useParticleImageOptions(): ParticleImageOption[] {
 						label: (
 							<div
 								style={{
-									background: `url(${back_anime.plugin_url}/assets/img/${fileName}) no-repeat center center / cover`,
+									background: `url(${itmaroon_back_anime.plugin_url}/assets/img/${fileName}) no-repeat center center / cover`,
 								}}
 							/>
 						),

@@ -99,7 +99,7 @@ export default function Edit({
 						type: "image",
 						options: {
 							image: {
-								src: `${back_anime.plugin_url}/assets/img/${particleImage}`,
+								src: `${itmaroon_back_anime.plugin_url}/assets/img/${particleImage}`,
 								width: 120,
 								height: 120,
 							},

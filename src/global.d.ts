@@ -63,14 +63,12 @@ declare module "@tsparticles/shape-image" {
 declare module "*.scss";
 
 declare module "*.svg" {
-	export const ReactComponent: (
-		props: Record<string, unknown>,
-	) => JSX.Element;
+	export const ReactComponent: (props: Record<string, unknown>) => JSX.Element;
 	const source: string;
 	export default source;
 }
 
-declare const back_anime: {
+declare const itmaroon_back_anime: {
 	plugin_url: string;
 };
 
