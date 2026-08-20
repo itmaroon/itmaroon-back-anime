@@ -74,6 +74,7 @@ export default function Edit({
 			height: "100%",
 			top: 0,
 			left: 0,
+			marginBlockStart: 0,
 		},
 	});
 	// edit.js 内で attributes から作る想定（数値が文字列でも安全にする）

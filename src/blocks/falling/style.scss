@@ -6,6 +6,8 @@
  */
 
 .wp-block-itmar-falling {
+	z-index: -1 !important;
+
 	#particlesId {
 		position: absolute;
 		top: 0;
@@ -15,10 +17,13 @@
 	}
 }
 
-.wp-block-group {
+// Falling ブロックの配置基準と重なり順を、このブロックを直接含む親に限定する。
+:where(.wp-block-group, .wp-site-blocks):has(> .wp-block-itmar-falling) {
 	position: relative;
+	isolation: isolate;
 }
 
-.wp-site-blocks {
-	position: relative;
+// 先頭の通常フロー要素の上マージンが body まで相殺されるのを防ぐ。
+.wp-site-blocks:has(> .wp-block-itmar-falling) {
+	display: flow-root;
 }

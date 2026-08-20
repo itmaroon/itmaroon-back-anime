@@ -1,1 +1,1 @@
-.wp-block-itmar-falling #particlesId{height:100%;right:0;position:absolute;top:0;width:100%}.wp-block-group,.wp-site-blocks{position:relative}
+.wp-block-itmar-falling{z-index:-1!important}.wp-block-itmar-falling #particlesId{height:100%;right:0;position:absolute;top:0;width:100%}:where(.wp-block-group,.wp-site-blocks):has(>.wp-block-itmar-falling){isolation:isolate;position:relative}.wp-site-blocks:has(>.wp-block-itmar-falling){display:flow-root}
