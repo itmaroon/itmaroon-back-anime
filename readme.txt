@@ -2,8 +2,8 @@
 Contributors:      itmaroon
 Tags:              block, animation, background, particle, wave
 Requires at least: 6.4
-Tested up to:      7.0
-Stable tag:        0.1.1
+Tested up to:      7.1
+Stable tag:        1.0.1
 Requires PHP:      8.2
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -83,6 +83,8 @@ The canvas animations are decorative backgrounds. Canvas elements are output wit
 6. Wave Background Block - settings panel
 
 == Changelog ==
+= 1.0.1 =
+first publish
 
 = 0.1.0 =
 * Release

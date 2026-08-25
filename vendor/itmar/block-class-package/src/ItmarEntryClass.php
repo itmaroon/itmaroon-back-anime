@@ -31,15 +31,7 @@ class ItmarEntryClass
       foreach (glob($blocks_dir . '/*') as $block) {
         // ブロックの登録
         $block_type = register_block_type($block);
-        // その後、このハンドルを使用してスクリプトの翻訳をセット
         if ($block_type instanceof \WP_Block_Type) {
-          $block_handle = str_replace("/", "-", $block_type->name);
-          // register_block_typeで生成されるハンドルを使用してスクリプトの翻訳をセット
-          wp_set_script_translations(
-            $block_handle . '-editor-script',
-            $text_domain,
-            plugin_dir_path($file_path) . 'languages'
-          );
           // このブロックが使う script handle 全部に localize を当てる
           $handles = array_merge(
             $block_type->editor_script_handles ?? array(),
@@ -50,6 +42,11 @@ class ItmarEntryClass
 
           foreach ($handles as $h) {
             wp_localize_script($h, 'itmar_option', $itmar_option);
+            wp_set_script_translations(
+              $h,
+              $text_domain,
+              plugin_dir_path($file_path) . 'languages'
+            );
           }
         }
       }
@@ -59,15 +56,7 @@ class ItmarEntryClass
       // ブロックの登録
       $block_type = register_block_type($block);
 
-      // その後、このハンドルを使用してスクリプトの翻訳をセット
       if ($block_type instanceof \WP_Block_Type) {
-        $block_handle = str_replace("/", "-", $block_type->name);
-        // register_block_typeで生成されるハンドルを使用してスクリプトの翻訳をセット
-        wp_set_script_translations(
-          $block_handle . '-editor-script',
-          $text_domain,
-          plugin_dir_path($file_path) . 'languages'
-        );
         // 単体ブロックの handle も同様に
         $handles = array_merge(
           $block_type->editor_script_handles ?? array(),
@@ -78,6 +67,11 @@ class ItmarEntryClass
 
         foreach ($handles as $h) {
           wp_localize_script($h, 'itmar_option', $itmar_option);
+          wp_set_script_translations(
+            $h,
+            $text_domain,
+            plugin_dir_path($file_path) . 'languages'
+          );
         }
       }
     }
