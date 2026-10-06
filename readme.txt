@@ -3,7 +3,7 @@ Contributors:      itmaroon
 Tags:              block, animation, background, particle, wave
 Requires at least: 6.4
 Tested up to:      7.1
-Stable tag:        1.0.1
+Stable tag:        1.1.0
 Requires PHP:      8.2
 License:           GPL-2.0-or-later
 License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -83,6 +83,9 @@ The canvas animations are decorative backgrounds. Canvas elements are output wit
 6. Wave Background Block - settings panel
 
 == Changelog ==
+= 1.1.0 =
+- Rebuilt the Particle and Wave background blocks with the latest shared packages; colors read the `--itmar-*` role variables.
+
 = 1.0.1 =
 first publish
 
@@ -91,6 +94,10 @@ first publish
 * Added Particle Background Block powered by tsParticles v3
 * Added Wave Background Block with responsive desktop/mobile values
 * Front-end scripts are loaded only when blocks are present (block.json viewScript)
+
+== Upgrade Notice ==
+= 1.1.0 =
+Rebuilt with the latest shared packages; colors follow the active theme. No configuration changes are required.
 
 == Development / Source Code ==
 
